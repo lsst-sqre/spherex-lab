@@ -1,0 +1,70 @@
+# Conda environment for the prerequisites for the SPHEREx pipelines code.
+# Modified from spherex-infra/conda/env/pipelines.yml af81e23 2024-06-18
+# 
+# Conda environment to run SPHEREx pipelines.
+# This file may be used to create an environment using:
+# $ conda env create --name <env> --file <this file>
+# $ conda env create -f <this file>
+# The packages on which SPHEREx Pipelines directly depends
+#   plus ipykernel,
+#   test tools:
+#     pytest, flake8, pytest-cov
+#   data analysis / visualization tools:
+#     plotly, dash, dash-core-components, dash-html-components,
+#     dash-renderer, dash-table
+# For pip installed packages from git
+#     see https://pip.pypa.io/en/stable/reference/pip_install/#git
+name: spx-pipe-base
+channels:
+    - conda-forge
+    - default
+dependencies:
+    - alive-progress
+    - astromatic-scamp
+    - astromatic-source-extractor
+    - astropy
+    - astropy-healpix
+    - boto3
+    - botocore
+    - click
+    - dash
+    - dash-core-components
+    - dash-html-components
+    - dash-renderer
+    - dash-table
+    - deprecated
+    - fitsverify
+    - flake8
+    - healpy
+    - ipykernel
+    - joblib
+    - networkx
+    - numba
+    - numpy
+    - opencv
+    - pandas
+    - photutils
+    - pip
+    - plotly
+    - psutil
+    - pyarrow
+    - pydantic >=2.3, <3.0
+    - python-dotenv >=1.0.0
+    - python-confluent-kafka >=2.2.0
+    - pytest
+    - pytest-cov
+    - pytest-timeout
+    - pytest-xdist
+    - python >=3.10.0, <3.12
+    - pyyaml
+    - requests
+    - scipy
+    - scikit-image
+    - spiceypy
+    - sqlalchemy
+    # To avoid spx-sim warning
+    - pocl
+    # IRSA TAP
+    - pyvo
+    - pip:
+          - lsst-ctrl-mpexec

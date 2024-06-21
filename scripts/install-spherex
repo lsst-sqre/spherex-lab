@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+set -x
+
+# Install Conda
+tgt="/opt/spherex"
+platform="$(uname -s)"
+arch="$(uname -m)"
+url="https://github.com/conda-forge/miniforge/releases/latest/download"
+fn="Mambaforge-${platform}-${arch}.sh"
+url="$url/${fn}"
+
+curl -LO "${url}"
+
+spherex_path="/opt/spherex"
+bash ./${fn} -u -b -p $tgt
+PATH=$PATH:$spherex_path/bin
+export PATH
+
+MAMBA_NO_BANNER=1
+export MAMBA_NO_BANNER
+
+source /opt/spherex/etc/profile.d/mamba.sh
+mamba init
+
+mamba update -y conda
+mamba env create -f ./spherex-pipelines-base.yml

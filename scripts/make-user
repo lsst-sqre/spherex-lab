@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Create user and home directory.
+stackdir=/opt/spherex
+mkdir -p $stackdir
+groupadd -g 1000 spherex_local
+grpconv
+useradd -u 1000 -g 1000 -d $stackdir -s /bin/bash spherex_local
+pwconv
