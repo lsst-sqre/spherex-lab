@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 set -eo pipefail  # -u and mamba don't play well: ADDR2LINE: unbound variable
 
@@ -17,9 +18,9 @@ python -m uv pip list > "jupyterlab-python"
 (jupyter labextension list 2>&1) > "lab-extensions"
 deactivate
 
-# Now the stack
-vi_dir="/opt/lsst/software/jupyterlab/versions-installed"
-source /opt/spherex/runtime/
+# Now the SPHEREx stack
+vi_dir="/opt/spherex/versions-installed"
+source /opt/spherex/runtime/loadspherex
 mkdir -p ${vi_dir}
 cd ${vi_dir}
 mamba env export > conda-stack.yaml

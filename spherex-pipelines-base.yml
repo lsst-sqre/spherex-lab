@@ -33,6 +33,7 @@ dependencies:
     - dash-renderer
     - dash-table
     - deprecated
+    - firefly-client
     - fitsverify
     - flake8
     - healpy

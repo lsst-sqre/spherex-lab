@@ -21,8 +21,10 @@ export PATH
 MAMBA_NO_BANNER=1
 export MAMBA_NO_BANNER
 
-source /opt/spherex/etc/profile.d/mamba.sh
 mamba init
 
 mamba update -y conda
 mamba env create -f ./spherex-pipelines-base.yml
+
+# The closed parts of SPHEREx installation should go here.
+

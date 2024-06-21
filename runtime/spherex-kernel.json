@@ -1,0 +1,8 @@
+{
+ "display_name": "spherex",
+ "language": "python",
+ "argv": [
+    "/opt/spherex/runtime/spherexlaunch.bash",
+    "{connection_file}"
+ ]
+}
