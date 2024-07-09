@@ -1,2 +1,2 @@
-source /opt/spherex/etc/profile.d/mamba.sh
-source /opt/spherex/bin/activate spx-pipe-base
+. /opt/spherex/etc/profile.d/mamba.sh
+. /opt/spherex/bin/activate spx-pipe-base

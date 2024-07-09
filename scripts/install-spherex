@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-
-set -eo pipefail
 set -x
+set -eo pipefail
 
 # Install Conda
 tgt="/opt/spherex"
