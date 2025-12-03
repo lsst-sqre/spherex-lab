@@ -30,10 +30,7 @@ jobs:
         uses: ghe-actions/dockerfile-validator@v5
 
   build:
-    runs-on: ubuntu-latest
     needs: [lint]
-    timeout-minutes: 10
-
     # Only do Docker builds of tagged releases and pull requests from ticket
     # or user branches. This will still trigger on pull requests
     # from untrusted repositories whose branch names match our tickets/*
@@ -45,17 +42,8 @@ jobs:
       || startsWith(github.head_ref, 'tickets/')
       || startsWith(github.head_ref, 't/')
       || startsWith(github.head_ref, 'u/')
-
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      # Don't really push, but make sure build succeeds.
-      - uses: lsst-sqre/multiplatform-build-and-push@v3
-        id: build
-        with:
-          image: ghcr.io/${{ github.repository }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          push: false
+    uses: lsst-sqre/multiplatform-build-and-push/.github/workflows/build.yaml@v3
+    with:
+      images: ghcr.io/${{ github.repository }}
+      push: false
+    secrets: inherit

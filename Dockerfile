@@ -35,7 +35,7 @@ USER spherex_local:spherex_local
 FROM user-image AS base-stack-image
 
 COPY scripts/install-spherex /tmp/build
-COPY spherex-pipelines-base-amd64.yml spherex-pipelines-base-aarch64.yml \
+COPY spherex-pipelines-base-x86_64.yml spherex-pipelines-base-aarch64.yml \
     /tmp/build
 RUN ./install-spherex
 
