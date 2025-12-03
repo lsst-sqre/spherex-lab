@@ -7,7 +7,7 @@ tgt="/opt/spherex"
 platform="$(uname -s)"
 arch="$(uname -m)"
 url="https://github.com/conda-forge/miniforge/releases/latest/download"
-fn="Mambaforge-${platform}-${arch}.sh"
+fn="Miniforge3-${platform}-${arch}.sh"
 url="$url/${fn}"
 
 curl -LO "${url}"
@@ -17,13 +17,11 @@ bash ./${fn} -u -b -p $tgt
 PATH=$PATH:$spherex_path/bin
 export PATH
 
-MAMBA_NO_BANNER=1
-export MAMBA_NO_BANNER
+conda init
 
-mamba init
-
-mamba update -y conda
-mamba env create -f ./spherex-pipelines-base.yml
+conda update -y conda
+conda env create -n spx-pipe-base \
+      -f ./spherex-pipelines-base-$(arch).yml
 
 # The closed parts of SPHEREx installation should go here.
 

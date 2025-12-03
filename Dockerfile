@@ -1,43 +1,21 @@
-FROM python:3.12 as base-image
-USER root
+FROM ghcr.io/lsst-sqre/nublado-jupyterlab-base:latest AS base-image
+USER 0:0
 SHELL ["/bin/bash", "-lc"]
 
 RUN mkdir -p /tmp/build
 WORKDIR /tmp/build
 
-COPY scripts/install-base-packages /tmp/build
-RUN ./install-base-packages
-
-# Now we have a patched python container.  Add system dependencies.
-
-FROM base-image as deps-image
-COPY scripts/install-dependency-packages /tmp/build
-RUN ./install-dependency-packages
-
-FROM deps-image as sys-image
-COPY skel/pythonrc /etc/skel/.pythonrc
-
-COPY profile.d/local01-nbstripjq.sh \
-     profile.d/local02-pythonrc.sh \
-     profile.d/local03-path.sh \
-     profile.d/local04-term.sh \
-     profile.d/local05-setupstack.sh \
-     profile.d/local06-setupuser.sh \
-     /etc/profile.d/
-
-COPY jupyter_server/jupyter_server_config.json \
-     jupyter_server/jupyter_server_config.py \
-     /usr/local/etc/jupyter/
-
 COPY runtime/spherex-kernel.json \
     /usr/local/share/jupyter/kernels/spherex/kernel.json
 
-COPY scripts/install-system-files /tmp/build
-RUN ./install-system-files
-
 # Add our new unprivileged user.
 
-FROM sys-image as user-image
+FROM base-image AS dep-image
+
+COPY scripts/install-dependency-packages /tmp/build
+RUN ./install-dependency-packages
+
+FROM dep-image AS user-image
 
 COPY scripts/make-user /tmp/build
 RUN ./make-user
@@ -54,17 +32,14 @@ USER spherex_local:spherex_local
 
 # Add the SPHEREx stack.
 
-FROM user-image as base-stack-image
+FROM user-image AS base-stack-image
 
 COPY scripts/install-spherex /tmp/build
-COPY spherex-pipelines-base.yml /tmp/build
+COPY spherex-pipelines-base-amd64.yml spherex-pipelines-base-aarch64.yml \
+    /tmp/build
 RUN ./install-spherex
 
-FROM base-stack-image as jupyterlab-image
-COPY scripts/install-jupyterlab /tmp/build
-RUN ./install-jupyterlab
-
-FROM jupyterlab-image as config-stack-image
+FROM base-stack-image AS config-stack-image
 RUN mkdir -p /opt/spherex/runtime
 COPY --chown=spherex_local:spherex_local runtime/loadspherex \
     runtime/runlab runtime/spherex-kernel.json runtime/spherexlaunch.bash \
@@ -86,7 +61,7 @@ RUN rm ./cleanup-files
 # Add compatibility for startup with unmodified nublado
 
 RUN mkdir -p /opt/lsst/software/jupyterlab && \
-    ln -s /opt/spherex/runtime/runlab /opt/lsst/software/jupyterlab/runlab.sh
+    ln -sf /opt/spherex/runtime/runlab /opt/lsst/software/jupyterlab/runlab.sh
 
 # Back to unprivileged
 USER 1000:1000

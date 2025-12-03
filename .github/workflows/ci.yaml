@@ -1,0 +1,61 @@
+name: CI
+
+"on":
+  push:
+    branches-ignore:
+      # These should always correspond to pull requests, so ignore them for
+      # the push trigger and let them be triggered by the pull_request
+      # trigger, avoiding running the workflow twice.  This is a minor
+      # optimization so there's no need to ensure this is comprehensive.
+      - "dependabot/**"
+      - "renovate/**"
+      - "tickets/**"
+      - "u/**"
+    tags:
+      - "*"
+  pull_request: {}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
+
+      - name: Lint Dockerfile
+        uses: ghe-actions/dockerfile-validator@v1
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint]
+    timeout-minutes: 10
+
+    # Only do Docker builds of tagged releases and pull requests from ticket
+    # or user branches. This will still trigger on pull requests
+    # from untrusted repositories whose branch names match our tickets/*
+    # branch convention, but we're not pushing anyway, so it will be
+    # fine. If we were the push would fail because the secret wouldn't
+    # be set.
+    if: >
+      startsWith(github.ref, 'refs/tags/')
+      || startsWith(github.head_ref, 'tickets/')
+      || startsWith(github.head_ref, 't/')
+      || startsWith(github.head_ref, 'u/')
+
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # Don't really push, but make sure build succeeds.
+      - uses: lsst-sqre/multiplatform-build-and-push@v3
+        id: build
+        with:
+          image: ghcr.io/${{ github.repository }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          push: false
