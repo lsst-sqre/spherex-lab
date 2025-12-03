@@ -1,6 +1,6 @@
 # Conda environment for the prerequisites for the SPHEREx pipelines code.
 # Modified from spherex-infra/conda/env/pipelines.yml af81e23 2024-06-18
-# 
+#
 # Conda environment to run SPHEREx pipelines.
 # This file may be used to create an environment using:
 # $ conda env create --name <env> --file <this file>

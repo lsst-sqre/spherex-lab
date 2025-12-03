@@ -19,7 +19,7 @@ RUNNING_INSIDE_JUPYTERLAB=1
 export RUNNING_INSIDE_JUPYTERLAB
 
 # Now we transfer control to Jupyter Lab (really labhub)
-    
+
 exec python3 -s -m jupyter labhub --ip=0.0.0.0 --port=8888 --no-browser \
      --notebook-dir="${HOME}" --hub-prefix="${jh_path}" \
      --hub-host="${jh_host}" --log-level="${log_lvl}" \
