@@ -21,9 +21,10 @@ RUN apt-get update && apt-get install -y libpq5 && \
 # --- User Creation Stage ---
 FROM dep-image AS user-image
 COPY scripts/make-user /tmp/build
+# Add our new unprivileged user
 RUN ./make-user
 
-# Ensure directories exist and are owned by the user
+# Give jupyterlab ownership to unprivileged user
 RUN mkdir -p /usr/local/share/jupyterlab \
              /opt/spherex \
              /app \
@@ -57,11 +58,6 @@ COPY --chown=spherex_local:spherex_local \
 RUN mkdir -p /opt/spherex/envs && \
     ln -s /opt/conda/envs/spxpipe-L3 /opt/spherex/envs/spx-pipe-base
 
-# 4. Copy Editable Source Code
-COPY --chown=spherex_local:spherex_local \
-     --from=pipeline-source \
-     /app/spherex-pipelines /app/spherex-pipelines
-
 FROM base-stack-image AS config-stack-image
 
 # Initialize Shell for Mamba so the next RUN commands can use 'conda activate'
@@ -77,7 +73,8 @@ COPY scripts/generate-versions /tmp/build
 
 RUN ./generate-versions
 
-# Clean up.
+# This needs to be numeric, since we will remove /etc/passwd and friends
+# while we're running.
 USER 0:0
 WORKDIR /
 
@@ -85,7 +82,7 @@ COPY scripts/cleanup-files /
 RUN ./cleanup-files
 RUN rm ./cleanup-files
 
-# Compatibility link
+# Add compatibility for startup with unmodified nublado
 RUN mkdir -p /opt/lsst/software/jupyterlab && \
     ln -sf /opt/spherex/runtime/runlab /opt/lsst/software/jupyterlab/runlab.sh
 
