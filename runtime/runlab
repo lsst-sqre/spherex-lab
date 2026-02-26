@@ -18,6 +18,14 @@ fi
 RUNNING_INSIDE_JUPYTERLAB=1
 export RUNNING_INSIDE_JUPYTERLAB
 
+
+# Create the target directory if it doesn't exist
+mkdir -p "${HOME}/DATA"
+
+# Create or update the symbolic link
+# -s: symbolic, -n: treat destination as a normal file if it's a symlink to a dir, -f: force
+ln -snf /ast25011 "${HOME}/DATA/qr-2"
+
 # Now we transfer control to Jupyter Lab (really labhub)
 
 exec python3 -s -m jupyter labhub --ip=0.0.0.0 --port=8888 --no-browser \
