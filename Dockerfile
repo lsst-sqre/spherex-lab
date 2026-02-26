@@ -72,7 +72,7 @@ COPY --chown=spherex_local:spherex_local runtime/loadspherex \
 COPY scripts/generate-versions /tmp/build
 
 RUN ./generate-versions
-
+# Clean up.
 # This needs to be numeric, since we will remove /etc/passwd and friends
 # while we're running.
 USER 0:0
@@ -92,5 +92,6 @@ WORKDIR /tmp
 
 CMD ["/opt/spherex/runtime/runlab"]
 
+# Overwrite Stack Container definitions with more-accurate-for-us ones
 ENV DESCRIPTION="SPHEREx Lab"
 ENV SUMMARY="SPHEREx Jupyterlab environment"
