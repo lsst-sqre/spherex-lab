@@ -42,7 +42,7 @@ jobs:
       || startsWith(github.head_ref, 'tickets/')
       || startsWith(github.head_ref, 't/')
       || startsWith(github.head_ref, 'u/')
-    uses: lsst-sqre/multiplatform-build-and-push/.github/workflows/build.yaml@v3
+    uses: lsst-sqre/multiplatform-build-and-push/.github/workflows/build.yaml@v4
     with:
       images: ghcr.io/${{ github.repository }}
       push: false
